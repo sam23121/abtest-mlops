@@ -1,25 +1,64 @@
 # AB-Hypothesis-Testing
 
-# Classic and sequential A/B testing analysis
+![Wordcloud](assets/CH.PNG?raw=true "workflow")
 
-performming data exploration to count unique values of categorical variables, making histogram, relational, and other necessary plots to help understand the data. For each of the plots we produce, We will write a description of what the plot shows in markdown cells.
+## About
+SmartAd is a mobile first advertiser agency. It designs intuitive touch-enabled advertising. It provides brands with an automated advertising experience via machine learning and creative excellence. Their company is based on the principle of voluntary participation which is proven to increase brand engagement and memorability 10 x more than static alternatives. 
+SmartAd provides an additional service called Brand Impact Optimiser (BIO), a lightweight questionnaire, served with every campaign to determine the impact of the creative, the ad they design, on various upper funnel metrics, including memorability and brand sentiment. 
 
-performming hypothesis testing: we will apply the classical p-value based algorithm and the sequential A/B testing algorithm 
+As a Machine learning engineer in SmartAd, the task was to design a reliable hypothesis testing algorithm for the BIO service and to determine whether a recent advertising campaign resulted in a significant lift in brand awareness.
 
-in the notebook we try to answer this questions
 
-    - Are the number of data points in the experiment enough to make a reasonable judgement or should the company run a longer experiment? Remember that running the experiment longer may be costly for many reasons, so you should always optimize the number of samples to make a statistically sound decision.
-    - What does your A/B testing analysis tell you? Is brand awareness increased for the exposed group?
-# A/B testing with Machine Learning
-we Split  the data by browser and platform_os, and version each split as a new version of the data in dvc.
+## Objectives
+An advertising company is running an online ad for a client with the intention of increasing brand awareness. The advertiser company earns money by charging the client based on user engagements with the ad it designed and serves via different platforms. To increase its market competitiveness, the advertising company provides a further service that quantifies the increase in brand awareness as a result of the ads it shows to online users. The main objective of this project is to test if the ads that the advertising company runs resulted in a significant lift in brand awareness. 
 
-    - For each version of the data we will do the following
-    - Split the data into 70% training, 20% validation, and 10% test sets.
-    - we apply machine learning to the training data. Train a machine learning model using 5-fold cross validation
-      using the following 3 different algorithms:
-            - Logistic Regression
-            - Decision Trees
-            - XGBoost
-            - RandomForest
+## Data
+The BIO data for this project is a “Yes” and “No” response of online users to the following question.
+   - Q: Do you know the brand Lux?
+		- O  Yes
+		- O  No
 
-    - we will Define the appropriate loss function  for the model using the validation data
+ The dataset is available  [Data](https://drive.google.com/file/d/18lFeavnfpzVCxdtBnU7LFM_ytd2podye/view?usp=sharing).
+
+## Repository overview
+ Structure of the repository:
+ 
+        ├── models  (contains trained model)
+        ├── assets  (contains assets)
+        ├── data    (contains data of smart ad)
+        ├── scripts (contains the main script)	
+        │   ├── logger.py (logger for the project)
+        overview)
+        │   ├── plot.py (handles plots)
+        ├── notebooks	
+        │   ├── overview.ipynb (overview of the project)
+        │   ├── classical.ipynb (Classical AB testing)
+        │   ├── sequential.ipynb (Sequential AB testing)
+        ├── tests 
+        │   ├── test_preprocess.py (test for the the AB testing script)
+        ├── README.md (contains the project description)
+        ├── requirements.txt (contains the required packages)
+        ├── setup.py (contains the setup of the project)
+        └── .dvc (contains the dvc configuration)
+
+## Requirements
+The project requires the following:
+python3
+Pip3
+
+## Hypothesis
+- H0: The ads that the advertising company runs did not result in a significant lift in brand awareness.
+- H1: The ads that the advertising company runs resulted in a significant lift in brand awareness.
+
+## Results
+- The test is significant at the p-value of 0.25.
+
+
+## Conclusion
+The ads that the advertising company runs did not result in a significant lift in brand awareness.
+
+## Contrbutors
+- Ken Wakura
+- Rehmet Yeshanew
+- Samuel Alene
+- Yididiya Samuel
