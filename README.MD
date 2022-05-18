@@ -1,6 +1,6 @@
 # AB-Hypothesis-Testing
 
-![](assets/CH.PNG?raw=true "workflow")
+![](/assets/CH.PNG)
 
 ## About
 SmartAd is a mobile first advertiser agency. It designs intuitive touch-enabled advertising. It provides brands with an automated advertising experience via machine learning and creative excellence. Their company is based on the principle of voluntary participation which is proven to increase brand engagement and memorability 10 x more than static alternatives. 
