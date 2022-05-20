@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
 from sklearn.preprocessing import LabelEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MinMaxScaler
 
 # To fill missing values
 from sklearn.impute import SimpleImputer
@@ -105,15 +107,18 @@ if __name__ == "__main__":
         # lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
         # lr.fit(train_x, train_y)
 
-        lr = LogisticRegression()
-        lr.fit(X_train, y_train)
-        train_score = lr.score(X_train, y_train)
-        test_score = lr.score(X_test, y_test)
+        # creating a pipeline
+        model_pipeline = Pipeline(steps=[('scaler', MinMaxScaler()), ('model', LogisticRegression())])
+        model_pipeline.fit(X_train, y_train)
+        # lr = LogisticRegression()
+        # lr.fit(X_train, y_train)
+        train_score = model_pipeline.score(X_train, y_train)
+        test_score = model_pipeline.score(X_test, y_test)
         with open("metrics.txt", 'w') as outfile:
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
-        predicted_qualities = lr.predict(X_test)
+        predicted_qualities = model_pipeline.predict(X_test)
 
         (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
 
@@ -139,8 +144,8 @@ if __name__ == "__main__":
             # There are other ways to use the Model Registry, which depends on the use case,
             # please refer to the doc for more information:
             # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-            mlflow.sklearn.log_model(lr, "model", registered_model_name="logisticRegAB")
+            mlflow.sklearn.log_model(model_pipeline, "model", registered_model_name="logisticRegAB")
         else:
-            mlflow.sklearn.log_model(lr, "model")
+            mlflow.sklearn.log_model(model_pipeline, "model")
 
         print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
