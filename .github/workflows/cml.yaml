@@ -7,7 +7,7 @@ jobs:
     container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v2
-      - uses: iterative/setup-cml@v1
+      # - uses: iterative/setup-cml@v1
       - name: Train model
         run: |
           # Your ML workflow goes here
@@ -18,5 +18,5 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Post reports as comments in GitHub PRs
-          cat results.txt >> report.md
+          cat meterics.txt >> report.md
           cml send-comment report.md
