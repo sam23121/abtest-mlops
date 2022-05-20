@@ -79,8 +79,8 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     # np.random.seed(40)
 
-    pd.set_option('max_column', None)
-    df = pd.read_csv(r'C:\Users\sam\Desktop\ab\data\AdSmartABdata.csv', engine = 'python')
+    # pd.set_option('max_column', None)
+    df = pd.read_csv('../data/AdSmartABdata.csv', engine = 'python')
 
     X, y = pre_processing(df)
     
