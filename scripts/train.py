@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join('../scripts')))
 
 import pandas as pd
 import numpy as np
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet
 from urllib.parse import urlparse
@@ -43,24 +43,7 @@ def eval_metrics(actual, pred):
     r2 = r2_score(actual, pred)
     return rmse, mae, r2
 
-
-if __name__ == "__main__":
-    warnings.filterwarnings("ignore")
-    np.random.seed(40)
-
-    # Read the wine-quality csv file from the URL
-    # csv_url = (
-    #     "http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
-    # )
-    # try:
-    #     data = pd.read_csv(csv_url, sep=";")
-    # except Exception as e:
-    #     logger.exception(
-    #         "Unable to download training & test CSV, check your internet connection. Error: %s", e
-    #     )
-    pd.set_option('max_column', None)
-    df = pd.read_csv(r'C:\Users\sam\Desktop\ab\data\AdSmartABdata.csv', engine = 'python')
-
+def pre_processing(df):
     #droping the auction id since it has no value for the train
     df.drop('auction_id', axis=1, inplace=True)
     numerical_column = df.select_dtypes(exclude="object").columns.tolist()
@@ -87,25 +70,26 @@ if __name__ == "__main__":
     y = df['clicked_or_not']
     X = df.drop(["clicked_or_not"], axis=1)
 
+    return X, y
 
-    # # Split the data into training and test sets. (0.75, 0.25) split.
-    # train, test = train_test_split(data)
 
-    # # The predicted column is "quality" which is a scalar from [3, 9]
-    # train_x = train.drop(["quality"], axis=1)
-    # test_x = test.drop(["quality"], axis=1)
-    # train_y = train[["quality"]]
-    # test_y = test[["quality"]]
-    #spliting the 10 percent for the test data
-    from sklearn.model_selection import train_test_split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
 
-    # alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
-    # l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
+
+if __name__ == "__main__":
+    warnings.filterwarnings("ignore")
+    # np.random.seed(40)
+
+    pd.set_option('max_column', None)
+    df = pd.read_csv(r'C:\Users\sam\Desktop\ab\data\AdSmartABdata.csv', engine = 'python')
+
+    X, y = pre_processing(df)
+    
+
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.23)
 
     with mlflow.start_run():
-        # lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
-        # lr.fit(train_x, train_y)
 
         # creating a pipeline
         model_pipeline = Pipeline(steps=[('scaler', MinMaxScaler()), ('model', LogisticRegression())])
@@ -114,11 +98,14 @@ if __name__ == "__main__":
         # lr.fit(X_train, y_train)
         train_score = model_pipeline.score(X_train, y_train)
         test_score = model_pipeline.score(X_test, y_test)
+
         with open("metrics.txt", 'w') as outfile:
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
         predicted_qualities = model_pipeline.predict(X_test)
+        acc_sco = accuracy_score(y_test, predicted_qualities)
+
 
         (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
 
@@ -129,6 +116,7 @@ if __name__ == "__main__":
 
         # mlflow.log_param("alpha", alpha)
         mlflow.log_metric("train_score", train_score)
+        mlflow.log_metric("acc_sco", train_score)
         mlflow.log_metric("test_score", test_score)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
