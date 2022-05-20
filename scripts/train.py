@@ -107,7 +107,11 @@ if __name__ == "__main__":
 
         lr = LogisticRegression()
         lr.fit(X_train, y_train)
-        score = lr.score(X_train, y_train)
+        train_score = lr.score(X_train, y_train)
+        test_score = lr.score(X_test, y_test)
+        with open("metrics.txt", 'w') as outfile:
+            outfile.write("Training variance explained: %2.1f%%\n" % train_score)
+            outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
         predicted_qualities = lr.predict(X_test)
 
@@ -119,7 +123,8 @@ if __name__ == "__main__":
         print("  R2: %s" % r2)
 
         # mlflow.log_param("alpha", alpha)
-        mlflow.log_metric("score", score)
+        mlflow.log_metric("train_score", train_score)
+        mlflow.log_metric("test_score", test_score)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
