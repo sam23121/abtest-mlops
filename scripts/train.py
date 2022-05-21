@@ -5,6 +5,8 @@ sys.path.append(os.path.abspath(os.path.join('../scripts')))
 
 import pandas as pd
 import numpy as np
+import seaborn 
+import matplotlib as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet
@@ -35,6 +37,8 @@ import logging
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
+
+from ml import ML
 
 
 def eval_metrics(actual, pred):
@@ -103,11 +107,11 @@ if __name__ == "__main__":
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
-        predicted_qualities = model_pipeline.predict(X_test)
-        acc_sco = accuracy_score(y_test, predicted_qualities)
+        predicted_qualities = model_pipeline.predict(X_val)
+        acc_sco = accuracy_score(y_val, predicted_qualities)
 
 
-        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
+        (rmse, mae, r2) = eval_metrics(y_val, predicted_qualities)
 
         print("  RMSE: %s" % rmse)
         print("  MAE: %s" % mae)
@@ -136,7 +140,23 @@ if __name__ == "__main__":
 
         print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
 
-        
+        y_pred = model_pipeline.predict(X_test) + np.random.normal(0,0.25,len(y_test))
+        y_jitter = y_test + np.random.normal(0,0.25,len(y_test))
+        res_df = pd.DataFrame(list(zip(y_jitter,y_pred)), columns = ["true","pred"])
+
+        ax = sns.scatterplot(x="true", y="pred",data=res_df)
+        ax.set_aspect('equal')
+        ax.set_xlabel('True predictions',fontsize = axis_fs) 
+        ax.set_ylabel('Predicted predictions', fontsize = axis_fs)#ylabel
+        ax.set_title('Residuals', fontsize = title_fs)
+
+        # Make it pretty- square aspect ratio
+        ax.plot([1, 10], [1, 10], 'black', linewidth=1)
+        plt.ylim((2.5,8.5))
+        plt.xlim((2.5,8.5))
+
+        plt.tight_layout()
+        plt.savefig("residuals_for_logesticregression.png",dpi=120)
 
     with mlflow.start_run():
         model_pipeline = Pipeline(steps=[('scaler', MinMaxScaler()), ('model', DecisionTreeClassifier(criterion = 'entropy'))])
@@ -150,11 +170,11 @@ if __name__ == "__main__":
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
-        predicted_qualities = model_pipeline.predict(X_test)
-        acc_sco = accuracy_score(y_test, predicted_qualities)
+        predicted_qualities = model_pipeline.predict(X_val)
+        acc_sco = accuracy_score(y_val, predicted_qualities)
 
 
-        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
+        (rmse, mae, r2) = eval_metrics(y_val, predicted_qualities)
 
         print("  RMSE: %s" % rmse)
         print("  MAE: %s" % mae)
@@ -184,7 +204,25 @@ if __name__ == "__main__":
 
         print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
 
+        y_pred = model_pipeline.predict(X_test) + np.random.normal(0,0.25,len(y_test))
+        y_jitter = y_test + np.random.normal(0,0.25,len(y_test))
+        res_df = pd.DataFrame(list(zip(y_jitter,y_pred)), columns = ["true","pred"])
 
+        ax = sns.scatterplot(x="true", y="pred",data=res_df)
+        ax.set_aspect('equal')
+        ax.set_xlabel('True predictions',fontsize = axis_fs) 
+        ax.set_ylabel('Predicted predictions', fontsize = axis_fs)#ylabel
+        ax.set_title('Residuals', fontsize = title_fs)
+
+        # Make it pretty- square aspect ratio
+        ax.plot([1, 10], [1, 10], 'black', linewidth=1)
+        plt.ylim((2.5,8.5))
+        plt.xlim((2.5,8.5))
+
+        plt.tight_layout()
+        plt.savefig("residuals_for_decisiontree.png",dpi=120)
+
+        
 
     with mlflow.start_run():
 
@@ -199,11 +237,11 @@ if __name__ == "__main__":
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
-        predicted_qualities = model_pipeline.predict(X_test)
-        acc_sco = accuracy_score(y_test, predicted_qualities)
+        predicted_qualities = model_pipeline.predict(X_val)
+        acc_sco = accuracy_score(y_val, predicted_qualities)
 
 
-        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
+        (rmse, mae, r2) = eval_metrics(y_val, predicted_qualities)
 
         print("  RMSE: %s" % rmse)
         print("  MAE: %s" % mae)
@@ -233,3 +271,21 @@ if __name__ == "__main__":
             mlflow.sklearn.log_model(model_pipeline, "model")
 
         print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
+
+        y_pred = model_pipeline.predict(X_test) + np.random.normal(0,0.25,len(y_test))
+        y_jitter = y_test + np.random.normal(0,0.25,len(y_test))
+        res_df = pd.DataFrame(list(zip(y_jitter,y_pred)), columns = ["true","pred"])
+
+        ax = sns.scatterplot(x="true", y="pred",data=res_df)
+        ax.set_aspect('equal')
+        ax.set_xlabel('True predictions',fontsize = axis_fs) 
+        ax.set_ylabel('Predicted predictions', fontsize = axis_fs)#ylabel
+        ax.set_title('Residuals', fontsize = title_fs)
+
+        # Make it pretty- square aspect ratio
+        ax.plot([1, 10], [1, 10], 'black', linewidth=1)
+        plt.ylim((2.5,8.5))
+        plt.xlim((2.5,8.5))
+
+        plt.tight_layout()
+        plt.savefig("residuals_for_random forest.png",dpi=120) 
