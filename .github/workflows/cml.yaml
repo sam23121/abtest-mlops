@@ -34,5 +34,5 @@ jobs:
           echo '# model metrics for randomforest' >> report.md
           cat metrics3.txt >> report.md
           echo "## Data viz" >> report.md
-          cml-publish residuals_for_random forest.png --md >> report.md
+          cml-publish residuals_for_randomforest.png --md >> report.md
           cml-send-comment report.md
