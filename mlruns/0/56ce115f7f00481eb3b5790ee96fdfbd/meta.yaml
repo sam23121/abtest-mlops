@@ -1,0 +1,15 @@
+artifact_uri: ./mlruns/0/56ce115f7f00481eb3b5790ee96fdfbd/artifacts
+end_time: 1653157206983
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 56ce115f7f00481eb3b5790ee96fdfbd
+run_uuid: 56ce115f7f00481eb3b5790ee96fdfbd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1653157191222
+status: 3
+tags: []
+user_id: sam
