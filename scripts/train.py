@@ -88,7 +88,9 @@ if __name__ == "__main__":
 
     X, y = pre_processing(df)
     
-
+    axis_fs = 18 #fontsize
+    title_fs = 22 #fontsize
+    sns.set(style="whitegrid")
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.23)
