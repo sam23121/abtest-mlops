@@ -52,7 +52,7 @@ def pre_processing(df):
 
 
     df = relevant_rows.drop('no', axis=1)
-    df.rename(columns = {'yes': 'clicked_or_not'}, inplace=True)
+    df.rename(columns = {'yes': 'brand_awareness'}, inplace=True)
 
     # Get column names have less than 10 more than 2 unique values
     to_one_hot_encoding = [col for col in categorical_column if df[col].nunique() <= 10 and df[col].nunique() > 2]
@@ -67,8 +67,8 @@ def pre_processing(df):
 
     df = pd.concat([df, one_hot_encoded_columns], axis=1)
 
-    y = df['clicked_or_not']
-    X = df.drop(["clicked_or_not"], axis=1)
+    y = df['brand_awareness']
+    X = df.drop(["brand_awareness"], axis=1)
 
     return X, y
 
@@ -131,6 +131,104 @@ if __name__ == "__main__":
             # please refer to the doc for more information:
             # https://mlflow.org/docs/latest/model-registry.html#api-workflow
             mlflow.sklearn.log_model(model_pipeline, "model", registered_model_name="logisticRegAB")
+        else:
+            mlflow.sklearn.log_model(model_pipeline, "model")
+
+        print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
+
+        
+
+    with mlflow.start_run():
+        model_pipeline = Pipeline(steps=[('scaler', MinMaxScaler()), ('model', DecisionTreeClassifier(criterion = 'entropy'))])
+        model_pipeline.fit(X_train, y_train)
+        # lr = LogisticRegression()
+        # lr.fit(X_train, y_train)
+        train_score = model_pipeline.score(X_train, y_train)
+        test_score = model_pipeline.score(X_test, y_test)
+
+        with open("metrics2.txt", 'w') as outfile:
+            outfile.write("Training variance explained: %2.1f%%\n" % train_score)
+            outfile.write("Test variance explained: %2.1f%%\n" % test_score)
+
+        predicted_qualities = model_pipeline.predict(X_test)
+        acc_sco = accuracy_score(y_test, predicted_qualities)
+
+
+        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
+
+        print("  RMSE: %s" % rmse)
+        print("  MAE: %s" % mae)
+        print("  R2: %s" % r2)
+
+        mlflow.log_param("cretrion", 'entropy')
+        mlflow.log_metric("train_score", train_score)
+        mlflow.log_metric("acc_sco", train_score)
+        mlflow.log_metric("test_score", test_score)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("r2", r2)
+        mlflow.log_metric("mae", mae)
+        # mlflow.sklearn.log_model(lr, "model")
+
+        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+        # Model registry does not work with file store
+        if tracking_url_type_store != "file":
+
+            # Register the model
+            # There are other ways to use the Model Registry, which depends on the use case,
+            # please refer to the doc for more information:
+            # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+            mlflow.sklearn.log_model(model_pipeline, "model", registered_model_name="decissiontreeAB")
+        else:
+            mlflow.sklearn.log_model(model_pipeline, "model")
+
+        print("Model saved in run %s" % mlflow.active_run().info.run_uuid)
+
+
+
+    with mlflow.start_run():
+
+        model_pipeline = Pipeline(steps=[('scaler', MinMaxScaler()), ('model', RandomForestClassifier(n_estimators = 10, criterion = 'entropy'))])
+        model_pipeline.fit(X_train, y_train)
+        # lr = LogisticRegression()
+        # lr.fit(X_train, y_train)
+        train_score = model_pipeline.score(X_train, y_train)
+        test_score = model_pipeline.score(X_test, y_test)
+
+        with open("metrics.txt", 'w') as outfile:
+            outfile.write("Training variance explained: %2.1f%%\n" % train_score)
+            outfile.write("Test variance explained: %2.1f%%\n" % test_score)
+
+        predicted_qualities = model_pipeline.predict(X_test)
+        acc_sco = accuracy_score(y_test, predicted_qualities)
+
+
+        (rmse, mae, r2) = eval_metrics(y_test, predicted_qualities)
+
+        print("  RMSE: %s" % rmse)
+        print("  MAE: %s" % mae)
+        print("  R2: %s" % r2)
+
+        mlflow.log_param("n_estimators", 10)
+        mlflow.log_param("cretrion", 'entropy')
+        mlflow.log_metric("train_score", train_score)
+        mlflow.log_metric("acc_sco", train_score)
+        mlflow.log_metric("test_score", test_score)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("r2", r2)
+        mlflow.log_metric("mae", mae)
+        # mlflow.sklearn.log_model(lr, "model")
+
+        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+        # Model registry does not work with file store
+        if tracking_url_type_store != "file":
+
+            # Register the model
+            # There are other ways to use the Model Registry, which depends on the use case,
+            # please refer to the doc for more information:
+            # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+            mlflow.sklearn.log_model(model_pipeline, "model", registered_model_name="randomforestAB")
         else:
             mlflow.sklearn.log_model(model_pipeline, "model")
 
