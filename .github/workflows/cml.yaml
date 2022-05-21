@@ -19,6 +19,14 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Post reports as comments in GitHub PRs
-          echo '# model metrics' > report.md
+          echo '# model metrics logesticregression' > report.md
           cat metrics.txt >> report.md
+          # cml-send-comment report.md
+
+          echo '# model metrics for decision tree' >> report.md
+          cat metrics2.txt >> report.md
+          # cml-send-comment report.md
+
+          echo '# model metrics for randomforest' >> report.md
+          cat metrics3.txt >> report.md
           cml-send-comment report.md

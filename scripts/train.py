@@ -195,7 +195,7 @@ if __name__ == "__main__":
         train_score = model_pipeline.score(X_train, y_train)
         test_score = model_pipeline.score(X_test, y_test)
 
-        with open("metrics.txt", 'w') as outfile:
+        with open("metrics3.txt", 'w') as outfile:
             outfile.write("Training variance explained: %2.1f%%\n" % train_score)
             outfile.write("Test variance explained: %2.1f%%\n" % test_score)
 
