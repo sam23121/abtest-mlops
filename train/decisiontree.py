@@ -57,6 +57,7 @@ data = pd.read_csv('../data/AdSmartABdata.csv', sep=',')
 
 
 # change the date column to datetime
+#
 data = preprocess.convert_to_datetime(data, 'date')
 numerical_column = preprocess.get_numerical_columns(data)
 categorical_column = preprocess.get_categorical_columns(data)
