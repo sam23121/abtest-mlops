@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join('../scripts')))
 
 import pandas as pd
 import numpy as np
-import seaborn 
+import seaborn as sns
 import matplotlib as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
@@ -38,7 +38,7 @@ import logging
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
-from ml import ML
+# from ml import ML
 
 
 def eval_metrics(actual, pred):
